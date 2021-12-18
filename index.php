@@ -3,36 +3,51 @@ $is_auth = rand(0, 1);
 $user_name = 'Артем'; 
 
 $categories = [
-    'Доски и лыжи' => [
-            'title' => '2014 Rossignol District Snowboard',
-            'price' => '10999',
-            'URL photo' => 'img/lot-1.jpg',
+    'Доски и лыжи',
+    'Крепления',
+    'Ботинки',
+    'Одежда',
+    'Инструменты',
+    'Разное',
+];
+
+$products = [
+    [
+        'title' => '2014 Rossignol District Snowboard',
+        'price' => '10999',
+        'URL photo' => 'img/lot-1.jpg',
+        'category' => $categories[0],
     ],
-    'Крепления' => [
+    [
         'title' => 'Крепления Union Contact Pro 2015 года размер L/XL',
         'price' => '8000',
         'URL photo' => 'img/lot-3.jpg',
+        'category' => $categories[1],
     ],
-    'Ботинки' => [
+    [
         'title' => 'Ботинки для сноуборда DC Mutiny Charocal',
         'price' => '10999',
         'URL photo' => 'img/lot-4.jpg',
+        'category' => $categories[2],
     ],
-    'Одежда' => [
+    [
         'title' => 'Куртка для сноуборда DC Mutiny Charocal',
         'price' => '7500',
         'URL photo' => 'img/lot-5.jpg',
+        'category' => $categories[3],
     ],
-    'Инструменты' => [
+    [
         'title' => '',
-        'price' => '',
+        'price' => '0',
         'URL photo' => '',
+        'category' => $categories[4],
     ],
-    'Разное' => [
+    [
         'title' => 'Маска Oakley Canopy',
         'price' => '5400',
         'URL photo' => 'img/lot-6.jpg',
-    ]
+        'category' => $categories[5],
+    ],
 ];
 ?>
 <!DOCTYPE html>
@@ -84,10 +99,10 @@ $categories = [
         <h2 class="promo__title">Нужен стафф для катки?</h2>
         <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
         <ul class="promo__list">
-            <?php foreach ($categories as $key => $value): ?>
+            <?php foreach ($categories as $value): ?>
             <!--заполните этот список из массива категорий-->
             <li class="promo__item promo__item--boards">
-                <a class="promo__link" href="pages/all-lots.html"><?=$key?></a>
+                <a class="promo__link" href="pages/all-lots.html"><?=$value?></a>
             </li>
             <?php endforeach; ?>
         </ul>
@@ -97,14 +112,14 @@ $categories = [
             <h2>Открытые лоты</h2>
         </div>
         <ul class="lots__list">
-            <?php foreach ($categories as $key => $value): ?>
+            <?php foreach ($products as $value): ?>
             <!--заполните этот список из массива с товарами-->
             <li class="lots__item lot">
                 <div class="lot__image">
                     <img src="" width="350" height="260" alt="">
                 </div>
                 <div class="lot__info">
-                    <span class="lot__category"><?=$key?></span>
+                    <span class="lot__category"><?=$value['category']?></span>
                     <h3 class="lot__title"><a class="text-link" href="pages/lot.html"><?=$value['title']?></a></h3>
                     <div class="lot__state">
                         <div class="lot__rate">
@@ -126,10 +141,10 @@ $categories = [
 <footer class="main-footer">
     <nav class="nav">
         <ul class="nav__list container">
-            <?php foreach ($categories as $key => $value): ?>
+            <?php foreach ($categories as $value): ?>
             <!--заполните этот список из массива категорий-->
             <li class="nav__item">
-                <a href="pages/all-lots.html"><?=$key?></a>
+                <a href="pages/all-lots.html"><?=$value?></a>
             </li>
             <?php endforeach; ?>
         </ul>
