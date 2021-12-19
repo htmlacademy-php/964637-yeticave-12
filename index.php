@@ -49,6 +49,27 @@ $products = [
         'category' => $categories[5],
     ],
 ];
+
+
+// function yetiPriceHard($userPrice) {
+//   $userPrice = ceil($userPrice);
+//   if ($userPrice >= 1000000) {
+//     return 'Твое барахло столько не стоит!';
+//   } elseif ($userPrice >= 1000) {
+//     $last4Simbols = ' ' . substr((string) $userPrice, -3);
+//     $userPrice = substr_replace((string) $userPrice, $last4Simbols, -3);
+//     return $userPrice . ' ' . '<img src="../img/rub.svg">';
+//   } else {
+//       return $userPrice . ' ' . '<img src="../img/rub.svg">';
+//   }
+// }
+
+function yetiPrice($userPrice) {
+  $userPrice = ceil($userPrice);
+  if ($userPrice >= 1000) {
+    $userPrice = number_format($userPrice, 0, '', ' ');
+  } return $userPrice . ' ' . '<img src="../img/rub.svg">';
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -124,7 +145,7 @@ $products = [
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount"><?=$value['price']?></span>
-                            <span class="lot__cost"><?=$value['price']?><b class="rub">р</b></span>
+                            <span class="lot__cost"><?= yetiPrice($value['price']) ?></span>
                         </div>
                         <div class="lot__timer timer">
                             12:23
