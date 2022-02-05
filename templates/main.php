@@ -31,12 +31,17 @@
                         <span class="lot__amount"><?=htmlspecialchars($value['price']); ?></span>
                         <span class="lot__cost"><?=formatPrice(htmlspecialchars($value['price']));?></span>
                     </div>
+<<<<<<< HEAD
                     <div class="lot__timer timer <?php $timerFinishing = get_dt_range($value); ?>
                         <?php if ($timerFinishing[0] == 0 && $timerFinishing[1] != 0): ?>
                             timer--finishing
                         <?php endif; ?>"
                     >
                         <?=implode(':', get_dt_range($value)); ?>
+=======
+                    <div class="lot__timer timer <?=timerFinishing($value['completion date']); ?>">
+                        <?=get_dt_range($value['completion date']); ?>
+>>>>>>> 81874e17c6378d34d5aafe2d8ef2abde950a581d
                     </div>
                 </div>
             </div>
