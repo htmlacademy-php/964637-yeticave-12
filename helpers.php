@@ -143,4 +143,22 @@ function include_template($name, array $data = []) {
     return $result;
 }
 
+function get_dt_range($value) {
+	$timerEnd = [];
+
+	$completionDateArray = (array) date_diff(date_create($value['completion date']), date_create('now'));
+
+	$timerEnd[0] = ($completionDateArray['days'] * 24) + $completionDateArray['h'];
+	$timerEnd[1] = $completionDateArray['i'];
+
+	if ($timerEnd[0] < 10 && $timerEnd[0] >= 0) {
+		$timerEnd[0] = str_pad((string) $timerEnd[0], 2, '0', STR_PAD_LEFT);
+	}
+
+	if ($timerEnd[1] < 10 && $timerEnd[1] >= 0) {
+		$timerEnd[1] = str_pad((string) $timerEnd[0], 2, '0', STR_PAD_LEFT);
+	}
+
+	return $timerEnd;
+}
 
