@@ -143,4 +143,15 @@ function include_template($name, array $data = []) {
     return $result;
 }
 
+function get_dt_range(string $completionDate) {
+	$completionDate = date_diff(date_create($completionDate), date_create('now'));
+
+    $hours = $completionDate -> days * 24 + $completionDate -> h;
+    $minutes = $completionDate -> i;
+
+	return [
+        str_pad((string) $hours, 2, '0', STR_PAD_LEFT),
+        str_pad((string) $minutes, 2, '0', STR_PAD_LEFT),
+    ];
+}
 

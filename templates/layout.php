@@ -24,7 +24,7 @@
         <nav class="user-menu">
             <?php if ($is_auth): ?>
                 <div class="user-menu__logged">
-                    <p><?=htmlspecialchars($userName);?></p>
+                    <p><?=htmlspecialchars($userName); ?></p>
                     <a class="user-menu__bets" href="pages/my-bets.html">Мои ставки</a>
                     <a class="user-menu__logout" href="#">Выход</a>
                 </div>
@@ -42,7 +42,7 @@
     </div>
 </header>
 
-<main class="container"><?=$content;?></main>
+<main class="container"><?=$content; ?></main>
 
 </div>
 
