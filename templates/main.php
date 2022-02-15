@@ -16,36 +16,32 @@
     </div>
     <ul class="lots__list">
         <?php foreach ($products as $value): ?>
-        <!--заполните этот список из массива с товарами-->
-        <li class="lots__item lot">
-            <div class="lot__image">
-                <img src="" width="350" height="260" alt="">
-            </div>
-            <div class="lot__info">
-                <span class="lot__category"><?=htmlspecialchars($value['category']); ?></span>
-                <h3 class="lot__title">
-                    <a class="text-link" href="pages/lot.html"><?=htmlspecialchars($value['title']); ?></a>
-                </h3>
-                <div class="lot__state">
-                    <div class="lot__rate">
-                        <span class="lot__amount"><?=htmlspecialchars($value['price']); ?></span>
-                        <span class="lot__cost"><?=formatPrice(htmlspecialchars($value['price']));?></span>
-                    </div>
-<<<<<<< HEAD
-                    <div class="lot__timer timer <?php $timerFinishing = get_dt_range($value); ?>
-                        <?php if ($timerFinishing[0] == 0 && $timerFinishing[1] != 0): ?>
-                            timer--finishing
-                        <?php endif; ?>"
-                    >
-                        <?=implode(':', get_dt_range($value)); ?>
-=======
-                    <div class="lot__timer timer <?=timerFinishing($value['completion date']); ?>">
-                        <?=get_dt_range($value['completion date']); ?>
->>>>>>> 81874e17c6378d34d5aafe2d8ef2abde950a581d
+            <?php $timerFinishing = get_dt_range($value['completion date']); ?>
+            <!--заполните этот список из массива с товарами-->
+            <li class="lots__item lot">
+                <div class="lot__image">
+                    <img src="" width="350" height="260" alt="">
+                </div>
+                <div class="lot__info">
+                    <span class="lot__category"><?=htmlspecialchars($value['category']); ?></span>
+                    <h3 class="lot__title">
+                        <a class="text-link" href="pages/lot.html"><?=htmlspecialchars($value['title']); ?></a>
+                    </h3>
+                    <div class="lot__state">
+                        <div class="lot__rate">
+                            <span class="lot__amount"><?=htmlspecialchars($value['price']); ?></span>
+                            <span class="lot__cost"><?=formatPrice(htmlspecialchars($value['price'])); ?></span>
+                        </div>
+                        <div class="lot__timer timer
+                            <?php if ($timerFinishing[0] == 0 && $timerFinishing[1] != 0): ?>
+                                timer--finishing
+                            <?php endif; ?>"
+                        >
+                            <?=implode(':', $timerFinishing); ?>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </li>
+            </li>
         <?php endforeach; ?>
     </ul>
 </section>
