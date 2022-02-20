@@ -22,13 +22,13 @@ CREATE TABLE IF NOT EXISTS `bets` (
   `id` int NOT NULL AUTO_INCREMENT,
   `dt_add` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `bet_value` int NOT NULL,
-  `lot_title` varchar(128) NOT NULL,
-  `user_name` varchar(128) NOT NULL,
+  `lot_id` int NOT NULL,
+  `user_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK_bets_lots` (`lot_title`),
-  KEY `FK_bets_users` (`user_name`),
-  CONSTRAINT `FK_bets_lots` FOREIGN KEY (`lot_title`) REFERENCES `lots` (`title`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `FK_bets_users` FOREIGN KEY (`user_name`) REFERENCES `users` (`name`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `FK_bets_lots` (`lot_id`) USING BTREE,
+  KEY `FK_bets_users` (`user_id`) USING BTREE,
+  CONSTRAINT `FK_bets_lots` FOREIGN KEY (`lot_id`) REFERENCES `lots` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK_bets_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Экспортируемые данные не выделены.
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`),
   UNIQUE KEY `simbolic_code` (`simbolic_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 
 -- Экспортируемые данные не выделены.
 
@@ -55,19 +55,19 @@ CREATE TABLE IF NOT EXISTS `lots` (
   `image` varchar(256) NOT NULL,
   `starting_price` int NOT NULL,
   `bet_step` int NOT NULL,
-  `author_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `winner_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `author_id` int NOT NULL,
+  `winner_id` int NOT NULL,
   `category_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_lots_categories` (`category_id`),
-  KEY `FK_lots_users` (`author_name`) USING BTREE,
-  KEY `FK_lots_users_2` (`winner_name`) USING BTREE,
   KEY `title` (`title`),
   KEY `dt_add` (`dt_add`),
   KEY `completion_dt` (`completion_dt`),
+  KEY `FK_lots_users` (`author_id`) USING BTREE,
+  KEY `FK_lots_users_2` (`winner_id`) USING BTREE,
   CONSTRAINT `FK_lots_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `FK_lots_users` FOREIGN KEY (`author_name`) REFERENCES `users` (`name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `FK_lots_users_2` FOREIGN KEY (`winner_name`) REFERENCES `users` (`name`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `FK_lots_users` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK_lots_users_2` FOREIGN KEY (`winner_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Экспортируемые данные не выделены.
@@ -80,16 +80,16 @@ CREATE TABLE IF NOT EXISTS `users` (
   `name` varchar(128) NOT NULL,
   `password` varchar(128) NOT NULL,
   `contact` varchar(128) NOT NULL,
-  `lot_title` varchar(128) NOT NULL,
-  `bet_title` varchar(128) NOT NULL,
+  `lot_id` int NOT NULL,
+  `bet_id` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `name` (`name`),
   KEY `dt_add` (`dt_add`),
-  KEY `FK_users_lots` (`lot_title`) USING BTREE,
-  KEY `FK_users_bet` (`bet_title`) USING BTREE,
-  CONSTRAINT `FK_users_bets` FOREIGN KEY (`bet_title`) REFERENCES `bets` (`user_name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `FK_users_lots` FOREIGN KEY (`lot_title`) REFERENCES `lots` (`author_name`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `FK_users_bets` (`bet_id`),
+  KEY `FK_users_lots` (`lot_id`),
+  CONSTRAINT `FK_users_bets` FOREIGN KEY (`bet_id`) REFERENCES `bets` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK_users_lots` FOREIGN KEY (`lot_id`) REFERENCES `lots` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Экспортируемые данные не выделены.
