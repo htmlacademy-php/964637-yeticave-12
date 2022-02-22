@@ -80,16 +80,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   `name` varchar(128) NOT NULL,
   `password` varchar(128) NOT NULL,
   `contact` varchar(128) NOT NULL,
-  `lot_id` int NOT NULL,
-  `bet_id` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `name` (`name`),
-  KEY `dt_add` (`dt_add`),
-  KEY `FK_users_bets` (`bet_id`),
-  KEY `FK_users_lots` (`lot_id`),
-  CONSTRAINT `FK_users_bets` FOREIGN KEY (`bet_id`) REFERENCES `bets` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `FK_users_lots` FOREIGN KEY (`lot_id`) REFERENCES `lots` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `dt_add` (`dt_add`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Экспортируемые данные не выделены.
