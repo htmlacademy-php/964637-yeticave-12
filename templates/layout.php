@@ -49,10 +49,10 @@
 <footer class="main-footer">
     <nav class="nav">
         <ul class="nav__list container">
-            <?php foreach ($categories as $value): ?>
+            <?php foreach ($resultCategories as $value): ?>
             <!--заполните этот список из массива категорий-->
             <li class="nav__item">
-                <a href="pages/all-lots.html"><?=htmlspecialchars($value);?></a>
+                <a href="pages/all-lots.html"><?=htmlspecialchars($value['title']);?></a>
             </li>
             <?php endforeach; ?>
         </ul>
