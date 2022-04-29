@@ -126,7 +126,7 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
  * @param array $data Ассоциативный массив с данными для шаблона
  * @return string Итоговый HTML
  */
-function include_template($name, array $data = []) {
+function include_template(string $name, array $data = []) {
     $name = 'templates/' . $name;
     $result = '';
 
@@ -155,3 +155,41 @@ function get_dt_range(string $completionDate) {
     ];
 }
 
+function formatPrice(int $userPrice) {
+    $userPrice = ceil($userPrice);
+    if ($userPrice >= 1000) {
+        $userPrice = number_format($userPrice, 0, '', ' ');
+    }
+    return $userPrice . ' ' . '<b class="rub"></b>';
+}
+
+function query_check($query, $is_auth, $userName, $title, $conn) {
+    if (!$query) {
+        $layoutContent = include_template('layout.php',
+            [
+                'content' => '<h2>Ошибка выполнения запроса к базе данных: </h2>' . mysqli_error($conn),
+                'title' => $title,
+                'userName' => $userName,
+                'is_auth' => $is_auth,
+            ]
+        );
+        echo $layoutContent;
+        exit;
+    }
+}
+
+function connect_check($conn, $is_auth, $userName, $title) {
+    if (!$conn) {
+        $layoutContent = include_template('layout.php',
+            [
+                'content' => '<h2>Ошибка подключения к базе данных: </h2>' . mysqli_connect_error(),
+                'title' => $title,
+                'userName' => $userName,
+                'is_auth' => $is_auth,
+            ]
+        );
+        echo $layoutContent;
+    } else {
+        return mysqli_set_charset($conn, "utf8");
+    }
+}
