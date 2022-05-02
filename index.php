@@ -1,24 +1,24 @@
 <?php
 error_reporting(0);
 require_once('helpers.php');
+require_once('config.php');
 date_default_timezone_set('Asia/Novokuznetsk');
 
 $is_auth = rand(0, 1);
 $userName = 'Артем';
 $title = 'Главная страница';
 
-$conn = mysqli_connect('localhost', 'root', 'root', '964637-yeticave-12');
-connect_check($conn, $is_auth, $userName, $title);
+$conn = getConnect(HOST, USER, PASS, DB);
+display($conn, $is_auth, $userName, $title);
 
 $getCategories = "SELECT * FROM categories";
-$categories = mysqli_query($conn, $getCategories);
-query_check($categories, $is_auth, $userName, $title, $conn);
-$categories = mysqli_fetch_all($categories, MYSQLI_ASSOC);
+$categories = getCategories($conn, $getCategories);
+display($categories, $is_auth, $userName, $title);
 
 $getLots = "SELECT * FROM lots WHERE completion_dt > CURRENT_TIMESTAMP ORDER BY dt_add DESC";
-$lots = mysqli_query($conn, $getLots);
-query_check($lots, $is_auth, $userName, $title, $conn);
-$lots = mysqli_fetch_all($lots, MYSQLI_ASSOC);
+$lots = getLots($conn, $getLots);
+display($lots, $is_auth, $userName, $title);
+
 
 $pageContent = include_template('main.php',
     [

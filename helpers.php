@@ -163,11 +163,24 @@ function formatPrice(int $userPrice) {
     return $userPrice . ' ' . '<b class="rub"></b>';
 }
 
-function query_check($query, $is_auth, $userName, $title, $conn) {
-    if (!$query) {
+function getConnect($host, $user, $pass, $db) {
+    $conn = mysqli_connect($host, $user, $pass, $db);
+    if (!$conn) {
+        return mysqli_connect_error();
+    }
+    $charset = mysqli_set_charset($conn, "utf8");
+    if (!$charset) {
+        return mysqli_connect_error();
+    }
+
+    return $conn;
+}
+
+function display($conn, int $is_auth, string $userName, string $title) {
+    if (is_string($conn)) {
         $layoutContent = include_template('layout.php',
             [
-                'content' => '<h2>Ошибка выполнения запроса к базе данных: </h2>' . mysqli_error($conn),
+                'content' => 'Произошла ошибка: ' . $conn,
                 'title' => $title,
                 'userName' => $userName,
                 'is_auth' => $is_auth,
@@ -178,18 +191,29 @@ function query_check($query, $is_auth, $userName, $title, $conn) {
     }
 }
 
-function connect_check($conn, $is_auth, $userName, $title) {
-    if (!$conn) {
-        $layoutContent = include_template('layout.php',
-            [
-                'content' => '<h2>Ошибка подключения к базе данных: </h2>' . mysqli_connect_error(),
-                'title' => $title,
-                'userName' => $userName,
-                'is_auth' => $is_auth,
-            ]
-        );
-        echo $layoutContent;
-    } else {
-        return mysqli_set_charset($conn, "utf8");
+function query($conn, $sql) {
+    $query = mysqli_query($conn, $sql);
+    if (!$query) {
+        return false;
     }
+
+    return $query = mysqli_fetch_all($query, MYSQLI_ASSOC);
+}
+
+function getCategories($conn, $sql) {
+    $query = query($conn, $sql);
+    if (!$query) {
+        return mysqli_error($conn);
+    }
+
+    return $query;
+}
+
+function getLots($conn, $sql) {
+    $query = query($conn, $sql);
+    if (!$query) {
+        return mysqli_error($conn);
+    }
+
+    return $query;
 }
