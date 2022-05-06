@@ -1,5 +1,5 @@
 <?php
-error_reporting(0);
+//error_reporting(0);
 require_once('helpers.php');
 require_once('config.php');
 date_default_timezone_set('Asia/Novokuznetsk');
@@ -9,15 +9,13 @@ $userName = 'Артем';
 $title = 'Главная страница';
 
 $conn = getConnect(HOST, USER, PASS, DB);
-display($conn, $is_auth, $userName, $title);
+getConnectError($conn, $is_auth, $userName, $title);
 
-$getCategories = "SELECT * FROM categories";
-$categories = getCategories($conn, $getCategories);
-display($categories, $is_auth, $userName, $title);
+$categories = getCategories($conn);
+getQueryError($categories, $is_auth, $userName, $title);
 
-$getLots = "SELECT * FROM lots WHERE completion_dt > CURRENT_TIMESTAMP ORDER BY dt_add DESC";
-$lots = getLots($conn, $getLots);
-display($lots, $is_auth, $userName, $title);
+$lots = getLots($conn);
+getQueryError($lots, $is_auth, $userName, $title);
 
 
 $pageContent = include_template('main.php',

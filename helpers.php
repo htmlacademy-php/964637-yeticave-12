@@ -166,32 +166,44 @@ function formatPrice(int $userPrice) {
 function getConnect($host, $user, $pass, $db) {
     $conn = mysqli_connect($host, $user, $pass, $db);
     if (!$conn) {
-        return mysqli_connect_error();
+        return false;
     }
     $charset = mysqli_set_charset($conn, "utf8");
     if (!$charset) {
-        return mysqli_connect_error();
+        return false;
     }
 
     return $conn;
 }
 
-function display($conn, int $is_auth, string $userName, string $title) {
-    if (is_string($conn)) {
-        $layoutContent = include_template('layout.php',
-            [
-                'content' => 'Произошла ошибка: ' . $conn,
-                'title' => $title,
-                'userName' => $userName,
-                'is_auth' => $is_auth,
-            ]
-        );
-        echo $layoutContent;
-        exit;
+function getConnectError($conn, int $is_auth, string $userName, string $title) {
+    if (!$conn) {
+        $error = mysqli_connect_error();
+        return display($error, $is_auth, $userName, $title);
     }
 }
 
-function query($conn, $sql) {
+function getQueryError($conn, int $is_auth, string $userName, string $title) {
+    if (!$conn) {
+        $error = mysqli_error($conn);
+        return display($error, $is_auth, $userName, $title);
+    }
+}
+
+function display($conn, int $is_auth, string $userName, string $title) {
+    $layoutContent = include_template('layout.php',
+        [
+            'content' => $conn,
+            'title' => $title,
+            'userName' => $userName,
+            'is_auth' => $is_auth,
+        ]
+    );
+    echo $layoutContent;
+    exit;
+}
+
+function query($conn, string $sql) {
     $query = mysqli_query($conn, $sql);
     if (!$query) {
         return false;
@@ -200,19 +212,21 @@ function query($conn, $sql) {
     return $query = mysqli_fetch_all($query, MYSQLI_ASSOC);
 }
 
-function getCategories($conn, $sql) {
+function getCategories($conn) {
+    $sql = "SELECT * FROM categories";
     $query = query($conn, $sql);
     if (!$query) {
-        return mysqli_error($conn);
+        return false;
     }
 
     return $query;
 }
 
-function getLots($conn, $sql) {
+function getLots($conn) {
+    $sql = "SELECT * FROM lots WHERE completion_dt > CURRENT_TIMESTAMP ORDER BY dt_add DESC";
     $query = query($conn, $sql);
     if (!$query) {
-        return mysqli_error($conn);
+        return false;
     }
 
     return $query;
