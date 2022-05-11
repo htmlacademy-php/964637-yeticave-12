@@ -126,7 +126,7 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
  * @param array $data Ассоциативный массив с данными для шаблона
  * @return string Итоговый HTML
  */
-function include_template($name, array $data = []) {
+function include_template(string $name, array $data = []) {
     $name = 'templates/' . $name;
     $result = '';
 
@@ -153,4 +153,94 @@ function get_dt_range(string $completionDate) {
         str_pad((string) $hours, 2, '0', STR_PAD_LEFT),
         str_pad((string) $minutes, 2, '0', STR_PAD_LEFT),
     ];
+}
+
+function formatPrice(int $userPrice) {
+    $userPrice = ceil($userPrice);
+    if ($userPrice >= 1000) {
+        $userPrice = number_format($userPrice, 0, '', ' ');
+    }
+
+    return $userPrice . ' ' . '<b class="rub"></b>';
+}
+
+function getConnect($host, $user, $pass, $db) {
+    $conn = mysqli_connect($host, $user, $pass, $db);
+    if (!$conn) {
+
+        return false;
+    }
+    $charset = mysqli_set_charset($conn, "utf8");
+    if (!$charset) {
+
+        return false;
+    }
+    
+    return $conn;
+}
+
+function getConnectError($conn) {
+    $result = mysqli_connect_error();
+    if (isset($result)) {
+        
+        return $result;
+    }
+
+    return 'Возникла неизвестная ошибка';
+}
+
+function getQueryError($conn) {
+    $result = mysqli_error($conn);
+    if (isset($result)) {
+
+        return $result;
+    }
+
+    return 'Возникла неизвестная ошибка';
+}
+
+function display($content, int $is_auth, string $userName, string $title) {
+    $layoutContent = include_template('layout.php',
+        [
+            'content' => $content,
+            'title' => $title,
+            'userName' => $userName,
+            'is_auth' => $is_auth,
+        ]
+    );
+    echo $layoutContent;
+    exit;
+}
+
+function query($conn, string $sql) {
+    $result = mysqli_query($conn, $sql);
+    if (!$result) {
+
+        return false;
+    }
+    $result = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    return $result;
+}
+
+function getCategories($conn) {
+    $sql = "SELECT * FROM categories";
+    $result = query($conn, $sql);
+    if (!$result) {
+        
+        return false;
+    }
+
+    return $result;
+}
+
+function getLots($conn) {
+    $sql = "SELECT * FROM lots WHERE completion_dt > CURRENT_TIMESTAMP ORDER BY dt_add DESC";
+    $result = query($conn, $sql);
+    if (!$result) {
+
+        return false;
+    }
+
+    return $result;
 }
