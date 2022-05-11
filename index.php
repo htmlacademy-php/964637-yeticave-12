@@ -1,5 +1,5 @@
 <?php
-//error_reporting(0);
+error_reporting(0);
 require_once('helpers.php');
 require_once('config.php');
 date_default_timezone_set('Asia/Novokuznetsk');
@@ -9,14 +9,22 @@ $userName = 'Артем';
 $title = 'Главная страница';
 
 $conn = getConnect(HOST, USER, PASS, DB);
-getConnectError($conn, $is_auth, $userName, $title);
+if (!$conn) {
+    $connectError = getConnectError($conn);
+    display($connectError, $is_auth, $userName, $title);
+}
 
 $categories = getCategories($conn);
-getQueryError($categories, $is_auth, $userName, $title);
+if (!$categories) {
+    $categoriesError = getQueryError($conn);
+    display($categoriesError, $is_auth, $userName, $title);
+}
 
 $lots = getLots($conn);
-getQueryError($lots, $is_auth, $userName, $title);
-
+if (!$lots) {
+    $lotsError = getQueryError($conn);
+    display($lotsError, $is_auth, $userName, $title);
+}
 
 $pageContent = include_template('main.php',
     [
