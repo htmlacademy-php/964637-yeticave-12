@@ -270,7 +270,7 @@ function getMaxBet($conn, int $id) {
 function getNextMinBet($conn, int $id) {
     $sql = "SELECT bet_step FROM lots WHERE id = $id";
     $result = query($conn, $sql);
-        if (!$result) {
+    if (!$result) {
 
         return false;
     }
@@ -278,12 +278,26 @@ function getNextMinBet($conn, int $id) {
     return $result[0];
 }
 
-function getLink($id) {
+function getLink( int $id) {
     $array = $_GET;
     $array['id'] = $id;
 	$query = http_build_query($array);
-	$url = '/?' . $query;
+	$url = '/' . 'lot.php' . '?' . $query;
+
 	return $url;
 }
 
+function getTitle($conn, int $id) {
+    $sql = "SELECT c.title
+              FROM lots AS l
+                   JOIN categories AS c
+                   ON l.category_id = c.id
+             WHERE l.id = $id";
+    $result = query($conn, $sql);
+    if (!$result) {
 
+        return false;
+    }
+
+    return $result[0];
+}

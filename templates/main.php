@@ -25,13 +25,8 @@
                 <div class="lot__info">
                     <span class="lot__category"><?=htmlspecialchars($value['category_id']); ?></span>
                     <h3 class="lot__title">
-                        <a class="text-link" href="lot.php
-                        <?php if (isset($value['id'])) {
-                            echo getLink($value['id']);
-                        } else {
-                            http_response_code(404);
-                            $currentLotError = 'Ошибка ' . http_response_code() . '. Страница не найдена.';
-                        }; ?>
+                        <a class="text-link" href="
+                            <?=getLink($value['id']); ?>
                         "><?=htmlspecialchars($value['title']); ?></a>
                     </h3>
                     <div class="lot__state">
