@@ -181,22 +181,22 @@ function getConnect($host, $user, $pass, $db) {
 
 function getConnectError($conn) {
     $result = mysqli_connect_error();
-    if (isset($result)) {
+    if (empty($result)) {
         
-        return $result;
+        return 'Возникла неизвестная ошибка';
     }
 
-    return 'Возникла неизвестная ошибка';
+    return $result;
 }
 
 function getQueryError($conn) {
     $result = mysqli_error($conn);
-    if (isset($result)) {
+    if (empty($result)) {
 
-        return $result;
+        return 'Возникла неизвестная ошибка';
     }
 
-    return 'Возникла неизвестная ошибка';
+    return $result;
 }
 
 function display($content, int $is_auth, string $userName, string $title) {
@@ -243,4 +243,61 @@ function getLots($conn) {
     }
 
     return $result;
+}
+
+function getCurrentLot($conn, int $id) {
+    $sql = "SELECT * FROM lots WHERE completion_dt > CURRENT_TIMESTAMP and id = $id";
+    $result = query($conn, $sql);
+    if (!$result) {
+
+        return false;
+    }
+
+    return $result[0];
+}
+
+function getMaxBet($conn, int $id) {
+    $sql = "SELECT MAX(bet_value) AS current_bet FROM bets WHERE lot_id = $id";
+    $result = query($conn, $sql);
+    if (!$result) {
+
+        return false;
+    }
+
+    return $result[0];
+}
+
+function getNextMinBet($conn, int $id) {
+    $sql = "SELECT bet_step FROM lots WHERE id = $id";
+    $result = query($conn, $sql);
+    if (!$result) {
+
+        return false;
+    }
+
+    return $result[0];
+}
+
+function getLink( int $id) {
+    $array = $_GET;
+    $array['id'] = $id;
+	$query = http_build_query($array);
+	$url = '/' . 'lot.php' . '?' . $query;
+
+	return $url;
+}
+
+function getTitle($conn, int $id) {
+    $sql = "SELECT c.title
+              FROM lots AS l
+                   JOIN categories AS c
+                   ON l.category_id = c.id
+             WHERE l.id = $id";
+    $result = query($conn, $sql);
+    if (!$result) {
+
+        return false;
+    }
+
+    return $result[0];
 }
