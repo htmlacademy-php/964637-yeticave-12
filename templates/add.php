@@ -2,9 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title></title>
+  <title><?=$title; ?></title>
   <link href="../css/normalize.min.css" rel="stylesheet">
   <link href="../css/style.css" rel="stylesheet">
+  <link href="../css/flatpickr.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -13,7 +14,7 @@
     <header class="main-header">
         <div class="main-header__container container">
             <h1 class="visually-hidden">YetiCave</h1>
-            <a class="main-header__logo">
+            <a class="main-header__logo" href="index.php">
                 <img src="../img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
             </a>
             <form class="main-header__search" method="get" action="https://echo.htmlacademy.ru" autocomplete="off">
@@ -42,7 +43,7 @@
         </div>
     </header>
 
-    <main>
+  <main>
         <nav class="nav">
             <ul class="nav__list container">
                 <?php foreach ($categories as $value): ?>
@@ -53,117 +54,78 @@
                 <?php endforeach; ?>
             </ul>
         </nav>
-        <section class="lot-item container">
-        <h2><?=$currentLot['title'];?></h2>
-          <div class="lot-item__content">
-            <div class="lot-item__left">
-            <div class="lot-item__image">
-                <img src="../<?=$currentLot['image'];?>" width="730" height="548" alt="Сноуборд">
-            </div>
-            <p class="lot-item__category">Категория: <span><?=$currentLot['category_id'];?></span></p>
-            <p class="lot-item__description"><?=$currentLot['description'];?></p>
-            </div>
-            <div class="lot-item__right">
-              <div class="lot-item__state">
-                <div class="lot-item__timer timer
-                  <?php $timerFinishing = get_dt_range($currentLot['completion_dt']); ?>
-                  <?php if ($timerFinishing[0] == 0 && $timerFinishing[1] != 0): ?>
-                    timer--finishing
-                  <?php endif; ?>"
-                >
-                  <?=implode(':', $timerFinishing); ?>
-                </div>
-                <div class="lot-item__cost-state">
-                <div class="lot-item__rate">
-                    <span class="lot-item__amount">Текущая цена</span>
-                    <span class="lot-item__cost"><?=$maxtBet['current_bet'] ?? $currentLot['starting_price'];?></span>
-                </div>
-                <div class="lot-item__min-cost">
-                    Мин. ставка <span><?=($maxtBet['current_bet']) ? $maxtBet['current_bet'] + $nextMinBet['bet_step'] : $currentLot['starting_price'] + $nextMinBet['bet_step'];?></span>
-                </div>
-                </div>
-                <!-- <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post" autocomplete="off">
-                <p class="lot-item__form-item form__item form__item--invalid">
-                    <label for="cost">Ваша ставка</label>
-                    <input id="cost" type="text" name="cost" placeholder="12 000">
-                    <span class="form__error">Введите наименование лота</span>
-                </p>
-                <button type="submit" class="button">Сделать ставку</button>
-                </form> -->
-            </div>
-            <!-- <div class="history">
-                <h3>История ставок (<span>10</span>)</h3>
-                <table class="history__list">
-                <tr class="history__item">
-                    <td class="history__name">Иван</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">5 минут назад</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Константин</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">20 минут назад</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Евгений</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">Час назад</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Игорь</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 08:21</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Енакентий</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 13:20</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Семён</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 12:20</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Илья</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 10:20</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Енакентий</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 13:20</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Семён</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 12:20</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Илья</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 10:20</td>
-                </tr>
-                </table>
-            </div> -->
-            </div>
+        
+    <form class="form form--add-lot container <?=(!count($addLotErr)) ? '' : 'form--invalid'; ?>" action="add.php" method="post" enctype="multipart/form-data">
+      <h2>Добавление лота</h2>
+      <div class="form__container-two">
+        <div class="form__item <?=checkCurrErr($addLotErr, 'lot_name'); ?>">
+          <label for="lot_name">Наименование <sup>*</sup></label>
+          <input id="lot_name" type="text" name="lot_name" placeholder="Введите наименование лота" maxlength="128" value="<?=$_POST['lot_name'] ?? ''; ?>">
+          <span class="form__error">Не введено наименование лота</span>
         </div>
-        </section>
-    </main>
+        <div class="form__item <?=checkCurrErr($addLotErr, 'category_id'); ?>">
+          <label for="category_id">Категория <sup>*</sup></label>
+          <select id="category_id" name="category_id">
+            <option value=<?=$_POST['category_id'] ?? 0; ?>><?=getCurrCategory($conn); ?></option>
+            <?php foreach ($categories as $value): ?>
+            <option value="<?=$value['id']; ?>"><?=$value['title']; ?></option>
+            <?php endforeach; ?>
+          </select>
+          <span class="form__error">Категория не выбрана</span>
+        </div>
+      </div>
+      <div class="form__item form__item--wide <?=checkCurrErr($addLotErr, 'description'); ?>">
+        <label for="description">Описание <sup>*</sup></label>
+        <textarea id="description" name="description" placeholder="Напишите описание лота" maxlength="256">
+          <?=$_POST['description'] ?? ''; ?>
+        </textarea>
+        <span class="form__error">Отсутствует описание лота</span>
+      </div>
+      <div class="form__item form__item--file <?=checkCurrErr($addLotErr, 'lot_img'); ?>">
+        <label for="lot_img">Изображение <sup>*</sup></label>
+        <div class="form__input-file">
+          <input class="visually-hidden" type="file" id="lot_img" name='lot_img' value="">
+          <label for="lot_img">
+            Добавить
+          </label>
+        </div>
+        <span class="form__error">Изображение не выбрано</span>
+      </div>
+      <div class="form__container-three">
+        <div class="form__item form__item--small <?=checkCurrErr($addLotErr, 'lot_rate'); ?>">
+          <label for="lot_rate">Начальная цена <sup>*</sup></label>
+          <input id="lot_rate" type="text" name="lot_rate" placeholder="0" maxlength="8" value="<?=$_POST['lot_rate'] ?? ''; ?>">
+          <span class="form__error">Начальная цена не указана</span>
+        </div>
+        <div class="form__item form__item--small <?=checkCurrErr($addLotErr, 'lot_step'); ?>">
+          <label for="lot_step">Шаг ставки <sup>*</sup></label>
+          <input id="lot_step" type="text" name="lot_step" placeholder="0" maxlength="8" value="<?=$_POST['lot_step'] ?? ''; ?>">
+          <span class="form__error">Шаг ставки не указан</span>
+        </div>
+        <div class="form__item <?=checkCurrErr($addLotErr, 'lot-date'); ?>">
+          <label for="lot-date">Дата окончания торгов <sup>*</sup></label>
+          <input class="form__input-date" id="lot-date" type="text" name="lot-date" placeholder="Введите дату в формате ГГГГ-ММ-ДД" value="<?=$_POST['lot-date'] ?? ''; ?>">
+          <span class="form__error">Введите корректную дату</span>
+        </div>
+      </div>
+      <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>
+      <button type="submit" class="button" name="submit" value="sent">Добавить лот</button>
+    </form>
+  </main>
 
 </div>
 
 <footer class="main-footer">
-  <nav class="nav">
-    <ul class="nav__list container">
-      <?php foreach ($categories as $value): ?>
-      <!--заполните этот список из массива категорий-->
-        <li class="nav__item">
-          <a href="pages/all-lots.html"><?=htmlspecialchars($value['title']);?></a>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-  </nav>
+        <nav class="nav">
+            <ul class="nav__list container">
+                <?php foreach ($categories as $value): ?>
+                <!--заполните этот список из массива категорий-->
+                <li class="nav__item">
+                    <a href="pages/all-lots.html"><?=htmlspecialchars($value['title']);?></a>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
   <div class="main-footer__bottom container">
     <div class="main-footer__copyright">
       <p>© 2019, YetiCave</p>
@@ -206,5 +168,7 @@
   </div>
 </footer>
 
+<script src="../flatpickr.js"></script>
+<script src="../script.js"></script>
 </body>
 </html>

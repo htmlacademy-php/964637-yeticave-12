@@ -1,26 +1,5 @@
 <?php
 /**
- * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
- *
- * Примеры использования:
- * is_date_valid('2019-01-01'); // true
- * is_date_valid('2016-02-29'); // true
- * is_date_valid('2019-04-31'); // false
- * is_date_valid('10.10.2010'); // false
- * is_date_valid('10/10/2010'); // false
- *
- * @param string $date Дата в виде строки
- *
- * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
- */
-function is_date_valid(string $date) : bool {
-    $format_to_check = 'Y-m-d';
-    $dateTimeObj = date_create_from_format($format_to_check, $date);
-
-    return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
-}
-
-/**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
  *
  * @param $link mysqli Ресурс соединения
@@ -155,8 +134,8 @@ function get_dt_range(string $completionDate) {
     ];
 }
 
-function formatPrice(int $userPrice) {
-    $userPrice = ceil($userPrice);
+function formatPrice($userPrice) {
+    $userPrice = ceil((int) $userPrice);
     if ($userPrice >= 1000) {
         $userPrice = number_format($userPrice, 0, '', ' ');
     }
@@ -235,7 +214,15 @@ function getCategories($conn) {
 }
 
 function getLots($conn) {
-    $sql = "SELECT * FROM lots WHERE completion_dt > CURRENT_TIMESTAMP ORDER BY dt_add DESC";
+    $sql = "SELECT l.id, l.lot_name, l.lot_date, l.dt_add, l.lot_img, l.lot_rate, c.title AS category_title,
+                   (SELECT MAX(bet_value)
+                      FROM bets
+                     WHERE l.id = lot_id) AS current_bet
+              FROM lots AS l
+                   JOIN categories AS c
+                   ON l.category_id = c.id
+             WHERE l.lot_date > CURRENT_TIMESTAMP
+             ORDER BY dt_add DESC";
     $result = query($conn, $sql);
     if (!$result) {
 
@@ -246,7 +233,7 @@ function getLots($conn) {
 }
 
 function getCurrentLot($conn, int $id) {
-    $sql = "SELECT * FROM lots WHERE completion_dt > CURRENT_TIMESTAMP and id = $id";
+    $sql = "SELECT * FROM lots WHERE lot_date > CURRENT_TIMESTAMP and id = $id";
     $result = query($conn, $sql);
     if (!$result) {
 
@@ -268,7 +255,7 @@ function getMaxBet($conn, int $id) {
 }
 
 function getNextMinBet($conn, int $id) {
-    $sql = "SELECT bet_step FROM lots WHERE id = $id";
+    $sql = "SELECT lot_step FROM lots WHERE id = $id";
     $result = query($conn, $sql);
     if (!$result) {
 
@@ -300,4 +287,46 @@ function getTitle($conn, int $id) {
     }
 
     return $result[0];
+}
+
+function getCurrCategory($conn) {
+    if (!isset($_POST['category_id']) or $_POST['category_id'] == 0) {
+
+        return 'Выберите категорию';
+    } else {
+        $currId = $_POST['category_id'];
+        $sql = "SELECT title FROM categories WHERE id = $currId";
+        $result = query($conn, $sql);
+
+        return $result[0]['title'];
+    }
+}
+
+function addLot($conn, $id) {
+    $_POST['lot_img'] = __DIR__ . '\uploads\\' . $_FILES['lot_img']['name'];
+    unset($_POST['submit']);
+
+    $sqlKey = [];
+    $sqlValue = [];
+
+    foreach ($_POST as $key => $value) {
+        $currValue = htmlspecialchars($value);
+        $currValue = stripcslashes($currValue);
+        $currValue = trim($currValue);
+
+        $key = str_replace('-', '_', $key);
+
+        $sqlKey[] = $key;
+        $sqlValue[] = $value;
+    }
+
+    $sql = "INSERT INTO lots (" . implode(', ', $sqlKey) . ")
+            VALUES (" . implode(', ', $sqlValue) . ")";
+echo $sql;
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    } else {
+        printf("Сообщение ошибки: %s\n", mysqli_error($conn));
+        return false;
+    }
 }

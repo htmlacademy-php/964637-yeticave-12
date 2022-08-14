@@ -54,11 +54,11 @@
             </ul>
         </nav>
         <section class="lot-item container">
-        <h2><?=$currentLot['title'];?></h2>
+        <h2><?=$currentLot['lot_name'];?></h2>
           <div class="lot-item__content">
             <div class="lot-item__left">
             <div class="lot-item__image">
-                <img src="../<?=$currentLot['image'];?>" width="730" height="548" alt="Сноуборд">
+                <img src="../<?=$currentLot['lot_img']; ?>" width="730" height="548" alt="Сноуборд">
             </div>
             <p class="lot-item__category">Категория: <span><?=$categoryTitle['title']; ?></span></p>
             <p class="lot-item__description"><?=$currentLot['description'];?></p>
@@ -66,7 +66,7 @@
             <div class="lot-item__right">
               <div class="lot-item__state">
                 <div class="lot-item__timer timer
-                  <?php $timerFinishing = get_dt_range($currentLot['completion_dt']); ?>
+                  <?php $timerFinishing = get_dt_range($currentLot['lot_date']); ?>
                   <?php if ($timerFinishing[0] == 0 && $timerFinishing[1] != 0): ?>
                     timer--finishing
                   <?php endif; ?>"
@@ -76,10 +76,10 @@
                 <div class="lot-item__cost-state">
                 <div class="lot-item__rate">
                     <span class="lot-item__amount">Текущая цена</span>
-                    <span class="lot-item__cost"><?=$maxBet['current_bet'] ?? $currentLot['starting_price'];?></span>
+                    <span class="lot-item__cost"><?=$maxBet['current_bet'] ?? $currentLot['lot_rate'];?></span>
                 </div>
                 <div class="lot-item__min-cost">
-                    Мин. ставка <span><?=($maxBet['current_bet']) ? $maxBet['current_bet'] + $nextMinBet['bet_step'] : $currentLot['starting_price'] + $nextMinBet['bet_step'];?></span>
+                    Мин. ставка <span><?=($maxBet['current_bet']) ? $maxBet['current_bet'] + $nextMinBet['lot_step'] : $currentLot['lot_rate'] + $nextMinBet['lot_step'];?></span>
                 </div>
                 </div>
                 <!-- <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post" autocomplete="off">

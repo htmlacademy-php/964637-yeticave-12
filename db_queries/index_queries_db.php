@@ -1,18 +1,18 @@
 <?php
-$conn = getConnect(HOST, USER, PASS, DB);//Подключаемся к бд. Получаем либо объект mysqli, либо false
+$conn = getConnect(HOST, USER, PASS, DB);
 if (!$conn) {
-    $connectError = getConnectError($conn); // Получаем текст ошибки
-    display($connectError, $is_auth, $userName, $title); // Выводим текст ошибки в layout
+    $connectError = getConnectError($conn);
+    display($connectError, $is_auth, $userName, $title);
 }
 
-$categories = getCategories($conn); //Делаем запрос в бд. Получаем либо массив из бд, либо false
+$categories = getCategories($conn);
 if (!$categories) {
-    $categoriesError = getQueryError($conn); // Получаем текст ошибки
-    display($categoriesError, $is_auth, $userName, $title); // Выводим текст ошибки в layout
+    $categoriesError = getQueryError($conn);
+    display($categoriesError, $is_auth, $userName, $title);
 }
 
-$lots = getLots($conn); //Делаем запрос в бд. Получаем либо массив из бд, либо false
+$lots = getLots($conn);
 if (!$lots) {
-    $lotsError = getQueryError($conn); // Получаем текст ошибки
-    display($lotsError, $is_auth, $userName, $title); // Выводим текст ошибки в layout
+    $lotsError = getQueryError($conn);
+    display($lotsError, $is_auth, $userName, $title);
 }
