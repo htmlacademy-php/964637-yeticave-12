@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
  *
@@ -8,7 +9,8 @@
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function db_get_prepare_stmt($link, $sql, $data = []) {
+function db_get_prepare_stmt($link, $sql, $data = [])
+{
     $stmt = mysqli_prepare($link, $sql);
 
     if ($stmt === false) {
@@ -25,11 +27,9 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 
             if (is_int($value)) {
                 $type = 'i';
-            }
-            else if (is_string($value)) {
+            } else if (is_string($value)) {
                 $type = 's';
-            }
-            else if (is_double($value)) {
+            } else if (is_double($value)) {
                 $type = 'd';
             }
 
@@ -75,7 +75,7 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
  *
  * @return string Рассчитанная форма множественнго числа
  */
-function get_noun_plural_form (int $number, string $one, string $two, string $many): string
+function get_noun_plural_form(int $number, string $one, string $two, string $many): string
 {
     $number = (int) $number;
     $mod10 = $number % 10;
@@ -105,7 +105,8 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
  * @param array $data Ассоциативный массив с данными для шаблона
  * @return string Итоговый HTML
  */
-function include_template(string $name, array $data = []) {
+function include_template(string $name, array $data = [])
+{
     $name = 'templates/' . $name;
     $result = '';
 
@@ -122,19 +123,21 @@ function include_template(string $name, array $data = []) {
     return $result;
 }
 
-function get_dt_range(string $completionDate) {
-	$completionDate = date_diff(date_create($completionDate), date_create('now'));
+function get_dt_range(string $completionDate)
+{
+    $completionDate = date_diff(date_create($completionDate), date_create('now'));
 
-    $hours = $completionDate -> days * 24 + $completionDate -> h;
-    $minutes = $completionDate -> i;
+    $hours = $completionDate->days * 24 + $completionDate->h;
+    $minutes = $completionDate->i;
 
-	return [
+    return [
         str_pad((string) $hours, 2, '0', STR_PAD_LEFT),
         str_pad((string) $minutes, 2, '0', STR_PAD_LEFT),
     ];
 }
 
-function formatPrice($userPrice) {
+function formatPrice($userPrice)
+{
     $userPrice = ceil((int) $userPrice);
     if ($userPrice >= 1000) {
         $userPrice = number_format($userPrice, 0, '', ' ');
@@ -143,7 +146,8 @@ function formatPrice($userPrice) {
     return $userPrice . ' ' . '<b class="rub"></b>';
 }
 
-function getConnect($host, $user, $pass, $db) {
+function getConnect($host, $user, $pass, $db)
+{
     $conn = mysqli_connect($host, $user, $pass, $db);
     if (!$conn) {
 
@@ -154,21 +158,23 @@ function getConnect($host, $user, $pass, $db) {
 
         return false;
     }
-    
+
     return $conn;
 }
 
-function getConnectError($conn) {
+function getConnectError($conn)
+{
     $result = mysqli_connect_error();
     if (empty($result)) {
-        
+
         return 'Возникла неизвестная ошибка';
     }
 
     return $result;
 }
 
-function getQueryError($conn) {
+function getQueryError($conn)
+{
     $result = mysqli_error($conn);
     if (empty($result)) {
 
@@ -178,8 +184,10 @@ function getQueryError($conn) {
     return $result;
 }
 
-function display($content, int $is_auth, string $userName, string $title) {
-    $layoutContent = include_template('layout.php',
+function display($content, int $is_auth, string $userName, string $title)
+{
+    $layoutContent = include_template(
+        'layout.php',
         [
             'content' => $content,
             'title' => $title,
@@ -191,7 +199,8 @@ function display($content, int $is_auth, string $userName, string $title) {
     exit;
 }
 
-function query($conn, string $sql) {
+function query($conn, string $sql)
+{
     $result = mysqli_query($conn, $sql);
     if (!$result) {
 
@@ -202,18 +211,20 @@ function query($conn, string $sql) {
     return $result;
 }
 
-function getCategories($conn) {
+function getCategories($conn)
+{
     $sql = "SELECT * FROM categories";
     $result = query($conn, $sql);
     if (!$result) {
-        
+
         return false;
     }
 
     return $result;
 }
 
-function getLots($conn) {
+function getLots($conn)
+{
     $sql = "SELECT l.id, l.lot_name, l.lot_date, l.dt_add, l.lot_img, l.lot_rate, c.title AS category_title,
                    (SELECT MAX(bet_value)
                       FROM bets
@@ -232,7 +243,8 @@ function getLots($conn) {
     return $result;
 }
 
-function getCurrentLot($conn, int $id) {
+function getCurrentLot($conn, int $id)
+{
     $sql = "SELECT * FROM lots WHERE lot_date > CURRENT_TIMESTAMP and id = $id";
     $result = query($conn, $sql);
     if (!$result) {
@@ -243,7 +255,8 @@ function getCurrentLot($conn, int $id) {
     return $result[0];
 }
 
-function getMaxBet($conn, int $id) {
+function getMaxBet($conn, int $id)
+{
     $sql = "SELECT MAX(bet_value) AS current_bet FROM bets WHERE lot_id = $id";
     $result = query($conn, $sql);
     if (!$result) {
@@ -254,7 +267,8 @@ function getMaxBet($conn, int $id) {
     return $result[0];
 }
 
-function getNextMinBet($conn, int $id) {
+function getNextMinBet($conn, int $id)
+{
     $sql = "SELECT lot_step FROM lots WHERE id = $id";
     $result = query($conn, $sql);
     if (!$result) {
@@ -265,16 +279,18 @@ function getNextMinBet($conn, int $id) {
     return $result[0];
 }
 
-function getLink( int $id) {
+function getLink(int $id)
+{
     $array = $_GET;
     $array['id'] = $id;
-	$query = http_build_query($array);
-	$url = '/' . 'lot.php' . '?' . $query;
+    $query = http_build_query($array);
+    $url = '/' . 'lot.php' . '?' . $query;
 
-	return $url;
+    return $url;
 }
 
-function getTitle($conn, int $id) {
+function getTitle($conn, int $id)
+{
     $sql = "SELECT c.title
               FROM lots AS l
                    JOIN categories AS c
@@ -289,8 +305,10 @@ function getTitle($conn, int $id) {
     return $result[0];
 }
 
-function getCurrCategory($conn) {
-    if (!isset($_POST['category_id']) or $_POST['category_id'] == 0) {
+function getCurrCategory($conn)
+{
+    $emptyCategory = 0;
+    if (!isset($_POST['category_id']) || $_POST['category_id'] === $emptyCategory) {
 
         return 'Выберите категорию';
     } else {
@@ -302,7 +320,8 @@ function getCurrCategory($conn) {
     }
 }
 
-function addLot($conn, $id) {
+function addLot($conn, $id)
+{
     $_POST['lot_img'] = __DIR__ . '\uploads\\' . $_FILES['lot_img']['name'];
     unset($_POST['submit']);
 
@@ -320,13 +339,22 @@ function addLot($conn, $id) {
         $sqlValue[] = $value;
     }
 
+    echo '<pre>';
+    var_dump(implode(', ', $sqlKey));
+    echo '</pre>';
+
+    echo '<pre>';
+    var_dump($sqlKey);
+    echo '</pre>';
+
     $sql = "INSERT INTO lots (" . implode(', ', $sqlKey) . ")
-            VALUES (" . implode(', ', $sqlValue) . ")";
-echo $sql;
+            VALUES ('" . implode(', ', $sqlValue) . "')";
+
     if (mysqli_query($conn, $sql)) {
         return true;
     } else {
-        printf("Сообщение ошибки: %s\n", mysqli_error($conn));
+        var_dump(implode(', ', $sqlKey));
+        printf("Сообщение ошибки: %s\n", mysqli_error($conn)); // !!!!!!!!!!!!!!!!!!!!!
         return false;
     }
 }
