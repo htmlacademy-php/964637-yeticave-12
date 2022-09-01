@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
  *
@@ -13,21 +14,24 @@
  *
  * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
  */
-function is_date_valid(string $date) : bool {
+function is_date_valid(string $date): bool
+{
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
 
     return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
 }
 
-function validateFilled($value) {
+function validateFilled($value)
+{
     if (!$_POST[$value]) {
 
         return "Категория не выбрана";
-    } 
+    }
 }
 
-function validateLength($value, $min, $max) {
+function validateLength($value, $min, $max)
+{
     $len = mb_strlen($_POST[$value]);
     if ($len < $min || $len > $max) {
 
@@ -35,14 +39,16 @@ function validateLength($value, $min, $max) {
     }
 }
 
-function validateRate($value) {
+function validateRate($value)
+{
     if ($_POST[$value] < 1 || empty($_POST[$value])) {
 
         return "Значение не может быть равна 0";
     }
 }
 
-function validateDate($value) {
+function validateDate($value)
+{
     if (empty($_POST[$value])) {
 
         return 'Дата не выбрана';
@@ -57,7 +63,8 @@ function validateDate($value) {
     }
 }
 
-function checkCurrErr(array $addLotErr, string $currErr) {
+function checkCurrErr(array $addLotErr, string $currErr)
+{
     if (isset($addLotErr[$currErr])) {
 
         return $addLotErr[$currErr] ? 'form__item--invalid' : '';

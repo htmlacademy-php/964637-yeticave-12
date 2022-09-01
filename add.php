@@ -1,13 +1,13 @@
 <?php
-//$id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-$is_auth = rand(0, 1);
-$userName = 'Артем';
-//error_reporting(0);
 require_once('config.php');
-date_default_timezone_set('Asia/Novokuznetsk');
 require_once('helpers.php');
 require_once('db_queries/add_queries_db.php');
 require_once('validate_func.php');
+
+$id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+$is_auth = random_int(0, 1);
+$userName = 'Артем';
+
 
 $title = 'Добавление лота';
 
@@ -42,32 +42,31 @@ if (isset($_POST['submit'])) {
     }
 }
 
+$addLotErr = array_filter($addLotErr);
+
+$emptyFile = 0;
+
 if (isset($_FILES['lot_img'])) {
-    if ($_FILES['lot_img']['size'] == 0) {
+    if ($_FILES['lot_img']['size'] === $emptyFile) {
         $addLotErr['lot_img'] = 'Фаил небыл выбран';
+    } elseif (mime_content_type($_FILES['lot_img']['tmp_name']) !== 'image/jpeg' && mime_content_type($_FILES['lot_img']['tmp_name']) !== 'image/png') {
+        $addLotErr['lot_img'] = 'Неверный формат файла';
     } else {
-        if (mime_content_type($_FILES['lot_img']['tmp_name']) != 'image/jpeg' && mime_content_type($_FILES['lot_img']['tmp_name']) != 'image/png') {
-            $addLotErr['lot_img'] = 'Неверный формат файла';
-        } else {
-            $file_name = $_FILES['lot_img']['name'];
-            $file_path = __DIR__ . '\uploads\\';
-        
-            if (!move_uploaded_file($_FILES['lot_img']['tmp_name'], $file_path . $file_name)) {
-                $addLotErr['lot_img'] = 'Не удалось загрузить фаил';
-            }
+        $file_name = $_FILES['lot_img']['name'];
+        $file_path = __DIR__ . '\uploads\\';
+
+        if (!move_uploaded_file($_FILES['lot_img']['tmp_name'], $file_path . $file_name)) {
+            $addLotErr['lot_img'] = 'Не удалось загрузить фаил';
         }
     }
 }
 
-$addLotErr = array_filter($addLotErr);
-
 if (isset($_POST['submit']) && count($addLotErr) == 0) {
     $addLot = addLot($conn, $is_auth);
-    echo 'Результат добавления в бд - ';
-    var_dump($addLot);
 }
 
-$pageContent = include_template('add.php',
+$pageContent = include_template(
+    'add.php',
     [
         'categories' => $categories,
         'title' => $title,

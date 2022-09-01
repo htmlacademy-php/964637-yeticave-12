@@ -9,5 +9,5 @@ if (!$conn) {
 $categories = getCategories($conn);
 if (!$categories) {
     $categoriesError = getQueryError($conn);
-    display($categoriesError, $is_auth, $userName);
+    display($categoriesError, $is_auth, $userName, $title);
 }
