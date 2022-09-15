@@ -41,9 +41,9 @@ function validateLength($value, $min, $max)
 
 function validateRate($value)
 {
-    if ($_POST[$value] < 1 || empty($_POST[$value])) {
+    if (!ctype_digit($_POST[$value]) || $_POST[$value] < 1) {
 
-        return "Значение не может быть равна 0";
+        return "Поле заполнено некорректно";
     }
 }
 

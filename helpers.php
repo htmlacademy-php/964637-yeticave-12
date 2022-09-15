@@ -195,8 +195,8 @@ function display($content, int $is_auth, string $userName, string $title)
             'is_auth' => $is_auth,
         ]
     );
-    echo $layoutContent;
-    exit;
+
+    return $layoutContent;
 }
 
 function query($conn, string $sql)
@@ -307,7 +307,7 @@ function getTitle($conn, int $id)
 
 function getCurrCategory($conn)
 {
-    $emptyCategory = 0;
+    $emptyCategory = '0';
     if (!isset($_POST['category_id']) || $_POST['category_id'] === $emptyCategory) {
 
         return 'Выберите категорию';
@@ -320,41 +320,39 @@ function getCurrCategory($conn)
     }
 }
 
-function addLot($conn, $id)
+function addLot($conn, $author_id)
 {
-    $_POST['lot_img'] = __DIR__ . '\uploads\\' . $_FILES['lot_img']['name'];
-    unset($_POST['submit']);
-
-    $sqlKey = [];
-    $sqlValue = [];
+    $_POST['lot-img'] = './uploads/' . $_FILES['lot-img']['name'];
+    $postData = [];
 
     foreach ($_POST as $key => $value) {
-        $currValue = htmlspecialchars($value);
-        $currValue = stripcslashes($currValue);
-        $currValue = trim($currValue);
-
         $key = str_replace('-', '_', $key);
-
-        $sqlKey[] = $key;
-        $sqlValue[] = $value;
+        $postData[$key] = mysqli_real_escape_string($conn, $value);
     }
 
-    echo '<pre>';
-    var_dump(implode(', ', $sqlKey));
-    echo '</pre>';
-
-    echo '<pre>';
-    var_dump($sqlKey);
-    echo '</pre>';
-
-    $sql = "INSERT INTO lots (" . implode(', ', $sqlKey) . ")
-            VALUES ('" . implode(', ', $sqlValue) . "')";
+    $sql = "INSERT INTO lots (lot_name, category_id, description, lot_img, lot_rate, lot_step, lot_date, author_id)
+            VALUES ('$postData[lot_name]', $postData[category], '$postData[message]', '$postData[lot_img]', $postData[lot_rate], $postData[lot_step], '$postData[lot_date]', $author_id)";
 
     if (mysqli_query($conn, $sql)) {
+
         return true;
     } else {
-        var_dump(implode(', ', $sqlKey));
-        printf("Сообщение ошибки: %s\n", mysqli_error($conn)); // !!!!!!!!!!!!!!!!!!!!!
+
         return false;
     }
+}
+
+function getAddedLot($conn)
+{
+    $lotName = $_POST['lot-name'];
+    $sql = "SELECT id
+              FROM lots
+             WHERE lot_name = '$lotName'";
+    $result = query($conn, $sql);
+    if (!$result) {
+
+        return false;
+    }
+
+    return $result[0]['id'];
 }

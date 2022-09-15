@@ -2,17 +2,20 @@
 $conn = getConnect(HOST, USER, PASS, DB);
 if (!$conn) {
     $connectError = getConnectError($conn);
-    display($connectError, $is_auth, $userName, $title);
+    echo display($connectError, $is_auth, $userName, $title);
+    exit;
 }
 
 $categories = getCategories($conn);
 if (!$categories) {
     $categoriesError = getQueryError($conn);
-    display($categoriesError, $is_auth, $userName, $title);
+    echo display($categoriesError, $is_auth, $userName, $title);
+    exit;
 }
 
 $lots = getLots($conn);
 if (!$lots) {
     $lotsError = getQueryError($conn);
-    display($lotsError, $is_auth, $userName, $title);
+    echo display($lotsError, $is_auth, $userName, $title);
+    exit;
 }

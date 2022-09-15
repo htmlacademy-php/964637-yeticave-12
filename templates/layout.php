@@ -26,7 +26,7 @@
                 <nav class="user-menu">
                     <?php if ($is_auth) : ?>
                         <div class="user-menu__logged">
-                            <p><?= htmlspecialchars($userName); ?></p>
+                            <p><?= strip_tags($userName); ?></p>
                             <a class="user-menu__bets" href="pages/my-bets.html">Мои ставки</a>
                             <a class="user-menu__logout" href="#">Выход</a>
                         </div>
@@ -54,7 +54,7 @@
                 <?php foreach ($categories as $value) : ?>
                     <!--заполните этот список из массива категорий-->
                     <li class="nav__item">
-                        <a href="pages/all-lots.html"><?= htmlspecialchars($value['title']); ?></a>
+                        <a href="pages/all-lots.html"><?= strip_tags($value['title']); ?></a>
                     </li>
                 <?php endforeach; ?>
             </ul>

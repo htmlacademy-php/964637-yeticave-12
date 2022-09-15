@@ -7,4 +7,8 @@ error_reporting(E_ALL);
 define('HOST', 'localhost');
 define('USER', 'root');
 define('PASS', 'root');
-define('DB', '964637-yeticave-12');
+define('DB', 'bd2');
+
+$is_auth = random_int(0, 1);
+$userName = 'Артем';
+$title = 'Главная страница';

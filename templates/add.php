@@ -27,7 +27,7 @@
         <nav class="user-menu">
           <?php if ($is_auth) : ?>
             <div class="user-menu__logged">
-              <p><?= htmlspecialchars($userName); ?></p>
+              <p><?= strip_tags($userName); ?></p>
               <a class="user-menu__bets" href="pages/my-bets.html">Мои ставки</a>
               <a class="user-menu__logout" href="#">Выход</a>
             </div>
@@ -51,7 +51,7 @@
           <?php foreach ($categories as $value) : ?>
             <!--заполните этот список из массива категорий-->
             <li class="nav__item">
-              <a href="pages/all-lots.html"><?= htmlspecialchars($value['title']); ?></a>
+              <a href="pages/all-lots.html"><?= strip_tags($value['title']); ?></a>
             </li>
           <?php endforeach; ?>
         </ul>
@@ -60,16 +60,16 @@
       <form class="form form--add-lot container <?= (!count($addLotErr)) ? '' : 'form--invalid'; ?>" action="add.php" method="post" enctype="multipart/form-data">
         <h2>Добавление лота</h2>
         <div class="form__container-two">
-          <div class="form__item <?= checkCurrErr($addLotErr, 'lot_name'); ?>">
-            <label for="lot_name">Наименование <sup>*</sup></label>
-            <input id="lot_name" type="text" name="lot_name" placeholder="Введите наименование лота" maxlength="128" value="<?= $_POST['lot_name'] ?? ''; ?>">
+          <div class="form__item <?= checkCurrErr($addLotErr, 'lot-name'); ?>">
+            <label for="lot-name">Наименование <sup>*</sup></label>
+            <input id="lot-name" type="text" name="lot-name" placeholder="Введите наименование лота" maxlength="128" value="<?= $_POST['lot-name'] ?? ''; ?>">
             <span class="form__error">Не введено наименование лота</span>
           </div>
-          <div class="form__item <?= checkCurrErr($addLotErr, 'category_id'); ?>">
-            <label for="category_id">Категория <sup>*</sup></label>
-            <select id="category_id" name="category_id">
+          <div class="form__item <?= checkCurrErr($addLotErr, 'category'); ?>">
+            <label for="category">Категория <sup>*</sup></label>
+            <select id="category" name="category">
               <?php $emptyCategory = 0; ?>
-              <option value=<?= $_POST['category_id'] ?? $emptyCategory; ?>><?= getCurrCategory($conn); ?></option>
+              <option value=<?= $_POST['category'] ?? $emptyCategory; ?>><?= getCurrCategory($conn); ?></option>
               <?php foreach ($categories as $value) : ?>
                 <option value="<?= $value['id']; ?>"><?= $value['title']; ?></option>
               <?php endforeach; ?>
@@ -77,32 +77,32 @@
             <span class="form__error">Категория не выбрана</span>
           </div>
         </div>
-        <div class="form__item form__item--wide <?= checkCurrErr($addLotErr, 'description'); ?>">
-          <label for="description">Описание <sup>*</sup></label>
-          <textarea id="description" name="description" placeholder="Напишите описание лота" maxlength="256">
-          <?= $_POST['description'] ?? ''; ?>
+        <div class="form__item form__item--wide <?= checkCurrErr($addLotErr, 'message'); ?>">
+          <label for="message">Описание <sup>*</sup></label>
+          <textarea id="message" name="message" placeholder="Напишите описание лота" maxlength="256">
+          <?= $_POST['message'] ?? ''; ?>
         </textarea>
           <span class="form__error">Отсутствует описание лота</span>
         </div>
-        <div class="form__item form__item--file <?= checkCurrErr($addLotErr, 'lot_img'); ?>">
-          <label for="lot_img">Изображение <sup>*</sup></label>
+        <div class="form__item form__item--file <?= checkCurrErr($addLotErr, 'lot-img'); ?>">
+          <label for="lot-img">Изображение <sup>*</sup></label>
           <div class="form__input-file">
-            <input class="visually-hidden" type="file" id="lot_img" name='lot_img' value="">
-            <label for="lot_img">
+            <input class="visually-hidden" type="file" id="lot-img" name='lot-img' value="">
+            <label for="lot-img">
               Добавить
             </label>
           </div>
           <span class="form__error">Изображение не выбрано</span>
         </div>
         <div class="form__container-three">
-          <div class="form__item form__item--small <?= checkCurrErr($addLotErr, 'lot_rate'); ?>">
-            <label for="lot_rate">Начальная цена <sup>*</sup></label>
-            <input id="lot_rate" type="text" name="lot_rate" placeholder="0" maxlength="8" value="<?= $_POST['lot_rate'] ?? ''; ?>">
+          <div class="form__item form__item--small <?= checkCurrErr($addLotErr, 'lot-rate'); ?>">
+            <label for="lot-rate">Начальная цена <sup>*</sup></label>
+            <input id="lot-rate" type="text" name="lot-rate" placeholder="0" maxlength="8" value="<?= $_POST['lot-rate'] ?? ''; ?>">
             <span class="form__error">Начальная цена не указана</span>
           </div>
-          <div class="form__item form__item--small <?= checkCurrErr($addLotErr, 'lot_step'); ?>">
-            <label for="lot_step">Шаг ставки <sup>*</sup></label>
-            <input id="lot_step" type="text" name="lot_step" placeholder="0" maxlength="8" value="<?= $_POST['lot_step'] ?? ''; ?>">
+          <div class="form__item form__item--small <?= checkCurrErr($addLotErr, 'lot-step'); ?>">
+            <label for="lot-step">Шаг ставки <sup>*</sup></label>
+            <input id="lot-step" type="text" name="lot-step" placeholder="0" maxlength="8" value="<?= $_POST['lot-step'] ?? ''; ?>">
             <span class="form__error">Шаг ставки не указан</span>
           </div>
           <div class="form__item <?= checkCurrErr($addLotErr, 'lot-date'); ?>">
@@ -124,7 +124,7 @@
         <?php foreach ($categories as $value) : ?>
           <!--заполните этот список из массива категорий-->
           <li class="nav__item">
-            <a href="pages/all-lots.html"><?= htmlspecialchars($value['title']); ?></a>
+            <a href="pages/all-lots.html"><?= strip_tags($value['title']); ?></a>
           </li>
         <?php endforeach; ?>
       </ul>
