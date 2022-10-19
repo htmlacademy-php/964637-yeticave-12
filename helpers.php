@@ -139,7 +139,6 @@ function get_dt_range(string $completionDate)
 function formatPrice($userPrice)
 {
     $userPrice = ceil((int) $userPrice);
-
     if ($userPrice >= 1000) {
         $userPrice = number_format($userPrice, 0, '', ' ');
     }
@@ -150,7 +149,6 @@ function formatPrice($userPrice)
 function getConnect($host, $user, $pass, $db)
 {
     $conn = mysqli_connect($host, $user, $pass, $db);
-
     if (!$conn) {
 
         return false;
@@ -167,7 +165,6 @@ function getConnect($host, $user, $pass, $db)
 function getConnectError($conn)
 {
     $result = mysqli_connect_error();
-
     if (empty($result)) {
 
         return 'Возникла неизвестная ошибка';
@@ -179,7 +176,6 @@ function getConnectError($conn)
 function getQueryError($conn)
 {
     $result = mysqli_error($conn);
-
     if (empty($result)) {
 
         return 'Возникла неизвестная ошибка';
@@ -206,7 +202,6 @@ function display($content, int $is_auth, string $userName, string $title)
 function query($conn, string $sql)
 {
     $result = mysqli_query($conn, $sql);
-
     if (!$result) {
 
         return false;
@@ -220,7 +215,6 @@ function getCategories($conn)
 {
     $sql = "SELECT * FROM categories";
     $result = query($conn, $sql);
-
     if (!$result) {
 
         return false;
@@ -241,7 +235,6 @@ function getLots($conn)
              WHERE l.lot_date > CURRENT_TIMESTAMP
              ORDER BY dt_add DESC";
     $result = query($conn, $sql);
-
     if (!$result) {
 
         return false;
@@ -254,7 +247,6 @@ function getCurrentLot($conn, int $id)
 {
     $sql = "SELECT * FROM lots WHERE lot_date > CURRENT_TIMESTAMP and id = $id";
     $result = query($conn, $sql);
-
     if (!$result) {
 
         return false;
@@ -280,7 +272,6 @@ function getNextMinBet($conn, int $id)
 {
     $sql = "SELECT lot_step FROM lots WHERE id = $id";
     $result = query($conn, $sql);
-
     if (!$result) {
 
         return false;
@@ -307,7 +298,6 @@ function getTitle($conn, int $id)
                    ON l.category_id = c.id
              WHERE l.id = $id";
     $result = query($conn, $sql);
-
     if (!$result) {
 
         return false;
@@ -319,7 +309,6 @@ function getTitle($conn, int $id)
 function getCurrCategory($conn)
 {
     $emptyCategory = '0';
-
     if (!isset($_POST['category_id']) || $_POST['category_id'] === $emptyCategory) {
 
         return 'Выберите категорию';
