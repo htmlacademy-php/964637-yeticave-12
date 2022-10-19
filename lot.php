@@ -1,16 +1,16 @@
 <?php
-$id = $_GET['id'];
-error_reporting(0);
+require_once('config.php');
 date_default_timezone_set('Asia/Novokuznetsk');
 require_once('helpers.php');
-require_once('config.php');
+$id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 require_once('db_queries/lot_queries_db.php');
 
-$is_auth = rand(0, 1);
-$userName = 'Артем';
-$title = $currentLot['title'];
 
-$pageContent = include_template('lot.php',
+
+$title = $currentLot['lot_name'];
+
+$pageContent = include_template(
+    'lot.php',
     [
         'categories' => $categories,
         'currentLot' => $currentLot,

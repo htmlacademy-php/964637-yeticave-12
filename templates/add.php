@@ -6,6 +6,7 @@
   <title><?= $title; ?></title>
   <link href="../css/normalize.min.css" rel="stylesheet">
   <link href="../css/style.css" rel="stylesheet">
+  <link href="../css/flatpickr.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -55,102 +56,62 @@
           <?php endforeach; ?>
         </ul>
       </nav>
-      <section class="lot-item container">
-        <h2><?= $currentLot['lot_name']; ?></h2>
-        <div class="lot-item__content">
-          <div class="lot-item__left">
-            <div class="lot-item__image">
-              <img src="../<?= $currentLot['lot_img']; ?>" width="730" height="548" alt="Сноуборд">
-            </div>
-            <p class="lot-item__category">Категория: <span><?= $categoryTitle['title']; ?></span></p>
-            <p class="lot-item__description"><?= $currentLot['message']; ?></p>
+
+      <form class="form form--add-lot container <?= (!count($addLotErr)) ? '' : 'form--invalid'; ?>" action="add.php" method="post" enctype="multipart/form-data">
+        <h2>Добавление лота</h2>
+        <div class="form__container-two">
+          <div class="form__item <?= checkCurrErr($addLotErr, 'lot-name'); ?>">
+            <label for="lot-name">Наименование <sup>*</sup></label>
+            <input id="lot-name" type="text" name="lot-name" placeholder="Введите наименование лота" maxlength="128" value="<?= $_POST['lot-name'] ?? ''; ?>">
+            <span class="form__error">Не введено наименование лота</span>
           </div>
-          <div class="lot-item__right">
-            <div class="lot-item__state">
-              <div class="lot-item__timer timer
-                  <?php $timerFinishing = get_dt_range($currentLot['lot_date']); ?>
-                  <?php $zeroTime = 0; ?>
-                  <?php if ($timerFinishing[0] === $zeroTime && $timerFinishing[1] !== $zeroTime) : ?>
-                    timer--finishing
-                  <?php endif; ?>">
-                <?= implode(':', $timerFinishing); ?>
-              </div>
-              <div class="lot-item__cost-state">
-                <div class="lot-item__rate">
-                  <span class="lot-item__amount">Текущая цена</span>
-                  <span class="lot-item__cost"><?= $maxBet['current_bet'] ?? $currentLot['lot_rate']; ?></span>
-                </div>
-                <div class="lot-item__min-cost">
-                  Мин. ставка <span><?= ($maxBet['current_bet']) ? $maxBet['current_bet'] + $nextMinBet['lot_step'] : $currentLot['lot_rate'] + $nextMinBet['lot_step']; ?></span>
-                </div>
-              </div>
-              <!-- <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post" autocomplete="off">
-                <p class="lot-item__form-item form__item form__item--invalid">
-                    <label for="cost">Ваша ставка</label>
-                    <input id="cost" type="text" name="cost" placeholder="12 000">
-                    <span class="form__error">Введите наименование лота</span>
-                </p>
-                <button type="submit" class="button">Сделать ставку</button>
-                </form> -->
-            </div>
-            <!-- <div class="history">
-                <h3>История ставок (<span>10</span>)</h3>
-                <table class="history__list">
-                <tr class="history__item">
-                    <td class="history__name">Иван</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">5 минут назад</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Константин</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">20 минут назад</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Евгений</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">Час назад</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Игорь</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 08:21</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Енакентий</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 13:20</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Семён</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 12:20</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Илья</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 10:20</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Енакентий</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 13:20</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Семён</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 12:20</td>
-                </tr>
-                <tr class="history__item">
-                    <td class="history__name">Илья</td>
-                    <td class="history__price">10 999 р</td>
-                    <td class="history__time">19.03.17 в 10:20</td>
-                </tr>
-                </table>
-            </div> -->
+          <div class="form__item <?= checkCurrErr($addLotErr, 'category'); ?>">
+            <label for="category">Категория <sup>*</sup></label>
+            <select id="category" name="category">
+              <?php $emptyCategory = 0; ?>
+              <option value=<?= $_POST['category'] ?? $emptyCategory; ?>><?= getCurrCategory($conn); ?></option>
+              <?php foreach ($categories as $value) : ?>
+                <option value="<?= $value['id']; ?>"><?= $value['title']; ?></option>
+              <?php endforeach; ?>
+            </select>
+            <span class="form__error">Категория не выбрана</span>
           </div>
         </div>
-      </section>
+        <div class="form__item form__item--wide <?= checkCurrErr($addLotErr, 'message'); ?>">
+          <label for="message">Описание <sup>*</sup></label>
+          <textarea id="message" name="message" placeholder="Напишите описание лота" maxlength="256"><?= $_POST['message'] ?? ''; ?></textarea>
+          <span class="form__error">Отсутствует описание лота</span>
+        </div>
+        <div class="form__item form__item--file <?= checkCurrErr($addLotErr, 'lot-img'); ?>">
+          <label for="lot-img">Изображение <sup>*</sup></label>
+          <div class="form__input-file">
+            <input class="visually-hidden" type="file" id="lot-img" name='lot-img' value="">
+            <label for="lot-img">
+              Добавить
+            </label>
+          </div>
+          <span class="form__error"><?= $addLotErr['lot-img'] ?? 'Изображение не выбрано';?></span>
+        </div>
+        <div class="form__container-three">
+          <div class="form__item form__item--small <?= checkCurrErr($addLotErr, 'lot-rate'); ?>">
+            <label for="lot-rate">Начальная цена <sup>*</sup></label>
+            <input id="lot-rate" type="text" name="lot-rate" placeholder="0" maxlength="8" value="<?= $_POST['lot-rate'] ?? ''; ?>">
+            <span class="form__error"><?= $addLotErr['lot-rate'];?></span>
+          </div>
+          <div class="form__item form__item--small <?= checkCurrErr($addLotErr, 'lot-step'); ?>">
+            <label for="lot-step">Шаг ставки <sup>*</sup></label>
+            <input id="lot-step" type="text" name="lot-step" placeholder="0" maxlength="8" value="<?= $_POST['lot-step'] ?? ''; ?>">
+            <span class="form__error"><?= $addLotErr['lot-step'];?></span>
+          </div>
+          <div class="form__item <?= checkCurrErr($addLotErr, 'lot-date'); ?>">
+            <label for="lot-date">Дата окончания торгов <sup>*</sup></label>
+            <input class="form__input-date" id="lot-date" type="text" name="lot-date" placeholder="Введите дату в формате ГГГГ-ММ-ДД" value="<?= $_POST['lot-date'] ?? ''; ?>">
+            <span class="form__error"><?= $addLotErr['lot-date'] ?? 'Введите дату';?></span>
+          </div>
+        </div>
+        <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>
+        <button type="submit" class="button" name="submit" value="sent">Добавить лот</button>
+      </form>
     </main>
 
   </div>
@@ -218,6 +179,8 @@
     </div>
   </footer>
 
+  <script src="../flatpickr.js"></script>
+  <script src="../script.js"></script>
 </body>
 
 </html>
